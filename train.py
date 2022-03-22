@@ -1,6 +1,7 @@
 import config
 from dataset.dataset import Dataset
 import utils.initialize as initialize
+import utils.visualize as visualize
 from models.generator import Generator
 from models.discriminator import Discriminator
 
@@ -8,7 +9,6 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from PIL import Image
 
 
 if __name__ == '__main__':
@@ -116,7 +116,4 @@ if __name__ == '__main__':
             img = generator(input).squeeze()
             img = (img + 1) / 2
 
-            img = img.cpu().detach().numpy() * 255
-            im = Image.fromarray(img)
-            im = im.convert('L')
-            im.save(const.IMAGE_FOLDER + str(i) + '/' + str(epoch) + '.png')
+            visualize.save_img(img, const.IMAGE_FOLDER + str(i) + '/' + str(epoch) + '.png')

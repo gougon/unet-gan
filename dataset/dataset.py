@@ -10,12 +10,15 @@ class Dataset:
         const = config.Constant
         hp = config.Hyperparameter
 
+        transform = transforms.Compose([transforms.ToTensor(),
+                                        transforms.Normalize(0.5, 0.5)
+                                        ])
         train_dataset = datasets.MNIST(root=const.DATA_FOLDER, download=True,
-                                       train=True, transform=transforms.ToTensor())
+                                       train=True, transform=transform)
         test_dataset = datasets.MNIST(root=const.DATA_FOLDER, download=True,
-                                       train=False, transform=transforms.ToTensor())
+                                      train=False, transform=transform)
 
-        split = int(0.01 * len(train_dataset))
+        split = int(0.8 * len(train_dataset))
         idx_list = list(range(len(train_dataset)))
         train_idx, val_idx = idx_list[:split], idx_list[split:]
 
