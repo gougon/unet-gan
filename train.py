@@ -8,12 +8,16 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from PIL import Image
 
 
 if __name__ == '__main__':
     hp = config.Hyperparameter
+    const = config.Constant
 
     initialize.random_seed(hp.SEED)
+    initialize.delete_images()
+    initialize.create_image_folders()
 
     device = 'cpu'
     if torch.cuda.is_available():
@@ -47,15 +51,17 @@ if __name__ == '__main__':
         print('---------------------------')
         print('Epoch:', epoch, end='\n\n')
         for i, (data, label) in enumerate(train_loader):
+            batch_size = label.shape[0] if label.shape[0] < hp.BATCH_SIZE else hp.BATCH_SIZE
+
             data, label = data.to(device), label.to(device)
-            noise = torch.randn((hp.BATCH_SIZE, hp.NUM_NOISE))
-            class_onehot = torch.zeros((hp.BATCH_SIZE, hp.NUM_CLASS))
-            class_onehot[np.arange(hp.BATCH_SIZE), label] = 1
+            noise = torch.randn((batch_size, hp.NUM_NOISE))
+            class_onehot = torch.zeros((batch_size, hp.NUM_CLASS))
+            class_onehot[np.arange(batch_size), label] = 1
 
             input = torch.cat((noise, class_onehot), 1).to(device)
             fake = generator(input)
-            real_dis_label = torch.ones((hp.BATCH_SIZE, 1)).to(device)
-            fake_dis_label = torch.zeros((hp.BATCH_SIZE, 1)).to(device)
+            real_dis_label = torch.ones((batch_size, 1)).to(device)
+            fake_dis_label = torch.zeros((batch_size, 1)).to(device)
             aux_label = label.clone()
 
             # train discriminator with real
@@ -100,3 +106,17 @@ if __name__ == '__main__':
         print('Loss G:', avg_loss_G)
         print('Loss D:', avg_loss_D)
         print('---------------------------')
+
+        # save image
+        noise = torch.randn((1, hp.NUM_NOISE))
+        for i in range(hp.NUM_CLASS):
+            class_onehot = torch.zeros((1, hp.NUM_CLASS))
+            class_onehot[np.arange(1), i] = 1
+            input = torch.cat((noise, class_onehot), 1).to(device)
+            img = generator(input).squeeze()
+            img = (img + 1) / 2
+
+            img = img.cpu().detach().numpy() * 255
+            im = Image.fromarray(img)
+            im = im.convert('L')
+            im.save(const.IMAGE_FOLDER + str(i) + '/' + str(epoch) + '.png')

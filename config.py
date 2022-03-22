@@ -1,5 +1,6 @@
 class Constant:
     DATA_FOLDER = 'data/'
+    IMAGE_FOLDER = 'data/image/'
 
 
 class Hyperparameter:

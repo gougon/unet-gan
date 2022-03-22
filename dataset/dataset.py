@@ -15,7 +15,7 @@ class Dataset:
         test_dataset = datasets.MNIST(root=const.DATA_FOLDER, download=True,
                                        train=False, transform=transforms.ToTensor())
 
-        split = int(0.8 * len(train_dataset))
+        split = int(0.01 * len(train_dataset))
         idx_list = list(range(len(train_dataset)))
         train_idx, val_idx = idx_list[:split], idx_list[split:]
 

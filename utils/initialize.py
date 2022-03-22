@@ -3,6 +3,8 @@ import torch.nn as nn
 import numpy as np
 import os
 import random
+import config
+import shutil
 
 
 def random_seed(seed):
@@ -23,3 +25,17 @@ def weights_init(m):
     elif classname.find('BatchNorm') != -1:
         nn.init.normal_(m.weight.data, 1.0, 0.02)
         nn.init.constant_(m.bias.data, 0)
+
+
+def create_image_folders():
+    for i in range(config.Hyperparameter.NUM_CLASS):
+        dirpath = config.Constant.IMAGE_FOLDER + str(i)
+        is_exist = os.path.exists(dirpath)
+        if not is_exist:
+            os.makedirs(dirpath)
+
+
+def delete_images():
+    for dirpath, dirnames, filenames in os.walk(config.Constant.IMAGE_FOLDER):
+        for d in dirnames:
+            shutil.rmtree(os.path.join(dirpath, d))

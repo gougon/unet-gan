@@ -49,7 +49,7 @@ class Discriminator(nn.Module):
         )
         self.fc_dis = nn.Linear(3 * 3 * hp.NUM_D_FILTER * 4, 1)
         self.fc_aux = nn.Linear(3 * 3 * hp.NUM_D_FILTER * 4, hp.NUM_CLASS)
-        self.softmax = nn.LogSoftmax()
+        self.softmax = nn.LogSoftmax(dim=1)
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
