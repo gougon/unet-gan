@@ -98,7 +98,7 @@ if __name__ == '__main__':
             avg_loss_G = total_loss_G / (cur_iter + 1)
             avg_loss_D = total_loss_D / (cur_iter + 1)
 
-            if i % 100 == 0:
+            if i % (len(train_loader) / const.LOG_TIMES) == 0:
                 print('Loss G:', avg_loss_G)
                 print('Loss D:', avg_loss_D)
 

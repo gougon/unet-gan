@@ -1,6 +1,7 @@
 class Constant:
     DATA_FOLDER = 'data/'
     IMAGE_FOLDER = 'data/image/'
+    LOG_TIMES = 3
 
 
 class Hyperparameter:
